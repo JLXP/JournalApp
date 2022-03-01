@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { NoteAppBar } from '../components/notes/NoteAppBar';
 
 
 export const useForm = ( initialState = {} ) => {
     
     const [values, setValues] = useState(initialState);
 
-    const reset = () => {
-        setValues( initialState );
+    //Establecer el valor al inicial
+    const reset = (newFormState = initialState) => {
+        setValues( newFormState );
     }
 
 

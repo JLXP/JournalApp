@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import validator from 'validator'
+import validator from 'validator';
 
 import { useForm } from '../../hooks/useForm'
 import { setError,removeError } from '../../actions/ui' 
@@ -21,11 +21,7 @@ export const RegisterScreen = () => {
       password2: '12345'
   });
 
-  const {
-    name, 
-    email, 
-    password,
-    password2 } = formValues;
+  const { name, email, password,password2 } = formValues;
 
   const handleRegister= (e)=>{
     e.preventDefault();

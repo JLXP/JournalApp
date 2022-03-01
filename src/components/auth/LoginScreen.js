@@ -1,30 +1,55 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import validator from 'validator';
 
-import { Link } from 'react-router-dom'
-import { login, startGoogleLogin, startLoginEmailPassword } from '../../actions/auth'
-import { useForm } from '../../hooks/useForm'
+import { Link } from 'react-router-dom';
+import { setError,removeError } from '../../actions/ui' 
+import { startGoogleLogin, startLoginEmailPassword } from '../../actions/auth';
+import { useForm } from '../../hooks/useForm';
 
-export const LoginScreen = () => {
+export const LoginScreen = () => { 
 
   const dispatch = useDispatch();
 
+  //Codigo para verificar si es correcto en caso contrario se manda llamar al id
+  const {msgError,loading} = useSelector(state => state.ui);
+  
+
+  //Inicializo los datos usando el form que se creo
   const [ formValues, handleInputChange ] = useForm({
-      email: 'javier.xool@outlook.com',
-      password: '12345'
+      email: 'javier@gmail.com',
+      password: '123456'
   });
 
+  //Desgloso los datos para poder usarlos donde desee
   const { email, password } = formValues;
 
   const handleLogin= (e)=>{
+    //El e.preventDefault sirve como un trycatch
     e.preventDefault();
-    console.log(email,password);
-    dispatch( startLoginEmailPassword(email,password));
 
+    if( isFormValid()){
+      dispatch( startLoginEmailPassword(email,password));
+    }
   }
 
   const handleGoogleLogin = () => {
     dispatch( startGoogleLogin());
+  }
+
+  //Codigo para verificar el formulario
+  const isFormValid = ()=>{
+
+    if( !validator.isEmail(email)){
+      dispatch(setError('Email is not valid'));
+      return false;
+    }else if( password.trim().length==0){
+      dispatch(setError('Password is required'));
+      return false;
+    }
+
+    dispatch(removeError());
+    return true
   }
 
 
@@ -32,6 +57,11 @@ export const LoginScreen = () => {
     <>
       <h3 className="auth__title">Login</h3>
       <form onSubmit={handleLogin}>
+        { msgError &&
+          <div className="auth__alert-error">
+            {msgError}
+          </div>
+        }
         <input
           type="text"
           placeholder="Email"
@@ -52,6 +82,7 @@ export const LoginScreen = () => {
         <button 
           className="btn btn-primary btn-block"
           type="submit"
+          disabled={ loading }
           
         >
           Login
