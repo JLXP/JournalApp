@@ -17,12 +17,13 @@ export const JournalEntry = ({id, date, title, body, url}) => {
         dispatch(activeNote(id,{
             date, title, body, url
         }));
+        
     }
   
     const day = dayjs(date);
 
     return (
-    <div className="journal__entry pointer" onClick={handleClickEntry}>
+    <div className="journal__entry pointer animate__animated animate__fadeIn animate__faster" onClick={handleClickEntry}>
         {
             //si url existe se realiza la acción
             url &&
@@ -30,7 +31,7 @@ export const JournalEntry = ({id, date, title, body, url}) => {
             className="journal__entry-picture"
             style={{
             backgroundSize:'cover',
-            backgroundImage:`$url(${url})`
+            backgroundImage:`url(${url})`
             }}
             >
             </div>}

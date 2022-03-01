@@ -2,19 +2,25 @@ import React, {useEffect,useRef} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from '../../hooks/useForm';
 import { NoteAppBar } from './NoteAppBar';
-import { activeNote } from '../../actions/notes';
+import { activeNote, startDeleting } from '../../actions/notes';
 
 
+//api para poder subir una imagen
+//https://api.cloudinary.com/v1_1/<cloud_name>/image/upload
+//hay que anexar file y upload_preset el cual es el que se creo en upload unsigned
+//https://api.cloudinary.com/v1_1/jlxp/image/upload
 
 export const NoteScreen = () => {
   
   const dispatch = useDispatch();
 
   const {active:note} = useSelector( state => state.notes );
-  
+
+
+  //No cambia el useForm solo asi por que maneja su propio estado
   const [formValues, handleInputChange, reset] = useForm( note );
 
-  const {body, title} = formValues;
+  const {body, title,id} = formValues;
 
   /*useRef permite almacenar una variable mutable que 
   no va a redibujar todo el componente
@@ -24,7 +30,7 @@ export const NoteScreen = () => {
   useEffect(()=>{
     /* si son diferentes se de reiniciar el
     formulario*/
-    if( note.id != activeId.current){
+    if( note.id !== activeId.current){
         reset(note);
         activeId.current = note.id;
     }
@@ -33,6 +39,10 @@ export const NoteScreen = () => {
   useEffect(()=>{
       dispatch( activeNote ( formValues.id, {...formValues}));
   },[ formValues, dispatch])
+
+  const handleDelete = () => {
+      dispatch(startDeleting( id ));
+  }
 
 
   return (
@@ -61,13 +71,15 @@ export const NoteScreen = () => {
                 &&
                 <div className="notes__image">
                     <img
-                        src="https://www.creativefabrica.com/wp-content/uploads/2020/04/25/illustration-of-natural-landscape-Graphics-3952025-1-1-580x412.jpg"
+                        src={note.url}
                         alt="imagen"
                     ></img>
                 </div> 
             }
                 
         </div>
+
+        <button className='btn btn-danger' onClick={handleDelete}>Delete</button>
     </div>
   )
 }
